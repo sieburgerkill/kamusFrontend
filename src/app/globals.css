@@ -4,6 +4,13 @@
 
 :root {
   --font-inter: 'Inter', system-ui, sans-serif;
+  --font-display: Georgia, 'Times New Roman', serif;
+  --gold: #C9A227;
+  --gold-soft: rgba(201, 162, 39, 0.32);
+  --ink-deep: #15131C;
+  --ink-soft: #4A4756;
+  --paper: #FBF8F2;
+  --ease-signature: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -12,62 +19,151 @@
   }
 
   body {
-    background-color: #F8F6F1;
-    color: #1A1A2E;
+    position: relative;
+    background-color: var(--ink-deep);
+    background-image:
+      radial-gradient(ellipse 80% 55% at 50% -10%, rgba(169, 29, 52, 0.14), transparent),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(201, 162, 39, 0.07), transparent);
+    color: #EDE8DC;
   }
 
   *:focus-visible {
-    outline: 2px solid #C8102E;
+    outline: 2px solid var(--gold);
     outline-offset: 2px;
     border-radius: 4px;
+    box-shadow: 0 0 0 4px var(--gold-soft);
   }
 }
 
 @layer components {
   .auth-card {
-    @apply bg-white rounded-2xl shadow-sm border border-mist;
+    @apply rounded-2xl border border-mist relative overflow-hidden;
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--paper) 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.8) inset,
+      0 28px 56px -28px rgba(21, 19, 28, 0.5),
+      0 10px 24px -14px rgba(169, 29, 52, 0.18);
+    z-index: 1;
+  }
+
+  /* hairline gold seam — the one piece of metal on the page */
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold) 35%, var(--gold) 65%, transparent);
+  }
+
+  /* wax-seal mark — place a <span class="auth-seal">信</span> in the card header */
+  .auth-seal {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--paper);
+    background: radial-gradient(circle at 30% 30%, #C8102E, #7C0F20);
+    box-shadow: 0 3px 8px rgba(124, 15, 32, 0.45);
+    transform: rotate(-6deg);
+    user-select: none;
+  }
+
+  .auth-heading {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
   }
 
   .btn-primary {
     @apply w-full bg-hanbok text-white font-semibold py-3 px-6 rounded-xl
-           hover:bg-red-700 active:scale-[0.98] transition-all duration-150
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+           active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+    letter-spacing: 0.015em;
+    box-shadow: 0 10px 22px -10px rgba(169, 29, 52, 0.55);
+    transition: transform 150ms var(--ease-signature),
+                box-shadow 200ms var(--ease-signature),
+                background-color 200ms var(--ease-signature);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: #8C1226;
+    box-shadow: 0 12px 26px -10px rgba(169, 29, 52, 0.65), 0 0 0 1px var(--gold-soft);
   }
 
   .btn-ghost {
     @apply w-full border border-mist text-ink font-medium py-3 px-6 rounded-xl
-           hover:bg-mist active:scale-[0.98] transition-all duration-150;
+           active:scale-[0.98];
+    transition: background-color 200ms var(--ease-signature),
+                border-color 200ms var(--ease-signature),
+                transform 150ms var(--ease-signature);
+  }
+
+  .btn-ghost:hover {
+    background-color: var(--paper);
+    border-color: var(--gold-soft);
   }
 
   .input-field {
     @apply w-full px-4 py-3 rounded-xl border border-mist bg-white
-           text-ink placeholder-gray-400 text-sm
-           focus:outline-none focus:border-hanbok focus:ring-2 focus:ring-hanbok/20
-           transition-all duration-150;
+           text-ink placeholder-gray-400 text-sm focus:outline-none;
+    box-shadow: inset 0 1px 2px rgba(21, 19, 28, 0.05);
+    transition: border-color 200ms var(--ease-signature), box-shadow 200ms var(--ease-signature);
+  }
+
+  .input-field:focus {
+    border-color: var(--gold);
+    box-shadow: inset 0 1px 2px rgba(21, 19, 28, 0.05), 0 0 0 3px var(--gold-soft);
   }
 
   .label {
-    @apply block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5;
+    @apply block text-xs font-semibold uppercase mb-1.5;
+    letter-spacing: 0.14em;
+    color: var(--ink-soft);
   }
 
   .error-msg {
-    @apply text-hanbok text-sm mt-1 flex items-center gap-1;
+    @apply text-hanbok text-sm mt-1 flex items-center gap-1.5;
   }
 
   .divider {
-    @apply flex items-center gap-3 text-gray-400 text-xs;
+    @apply flex items-center gap-3 text-xs;
+    color: var(--ink-soft);
   }
 
   .divider::before,
   .divider::after {
     content: '';
-    @apply flex-1 h-px bg-mist;
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(74, 71, 86, 0.22), transparent);
   }
 }
 
-/* Korean character decorative background */
+/* Ambient ink-wash mark — one oversized, faint character instead of a tiled pattern.
+   Apply to a position:relative wrapper around the page; keep real content at z-10+. */
 .korean-bg {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='10' y='45' font-size='40' fill='%23C8102E' opacity='0.04' font-family='serif'%3E한%3C/text%3E%3C/svg%3E");
+  position: relative;
+  isolation: isolate;
+}
+
+.korean-bg::after {
+  content: '信';
+  position: absolute;
+  top: -3rem;
+  right: -2rem;
+  z-index: 0;
+  font-family: var(--font-display), serif;
+  font-size: 16rem;
+  line-height: 1;
+  color: rgba(169, 29, 52, 0.07);
+  pointer-events: none;
+  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
